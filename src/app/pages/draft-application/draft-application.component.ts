@@ -52,7 +52,7 @@ export class DraftApplicationComponent implements OnInit {
   private initForm(): void {
     this.applicationForm = this.fb.group({
       nom: ['', [Validators.required, Validators.minLength(2)]],
-      cin: ['', [Validators.required, Validators.pattern(/^\d{6,10}$/)]],
+      cin: ['', [Validators.required, Validators.pattern(/^[A-Z]{1,2}\d{5,7}$/)]],
       telephone: ['', [Validators.required, Validators.pattern(/^0[5-7]\d{8}$/)]],
       email: ['', [Validators.required, Validators.email]],
 

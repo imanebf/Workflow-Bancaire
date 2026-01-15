@@ -39,14 +39,14 @@ export interface Application {
 }
 
 
-export const WORKFLOW_STEPS: { status: ApplicationStatus; label: string; icon: string }[] = [
+export const WORKFLOW_STEPS = [
   { status: 'Brouillon', label: 'Brouillon', icon: 'edit' },
   { status: 'Soumis', label: 'Soumis', icon: 'send' },
   { status: 'Pre-analyse', label: 'Pré-analyse', icon: 'auto_fix_high' },
   { status: 'Documents requis', label: 'Documents requis', icon: 'description' },
   { status: 'Analyse finale', label: 'Analyse finale', icon: 'rule' },
   { status: 'Offre generee', label: 'Offre générée', icon: 'document_scanner' },
-  { status: 'Signature', label: 'Signature', icon: 'signature' },
+  { status: 'Signature', label: 'Signature', icon: 'draw' }, // ← ✅ corrigé
   { status: 'Accepte', label: 'Accepté', icon: 'check_circle' },
   { status: 'Refuse', label: 'Refusé', icon: 'cancel' }
-];
+] as const;

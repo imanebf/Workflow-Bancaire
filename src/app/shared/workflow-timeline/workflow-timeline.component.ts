@@ -27,4 +27,8 @@ export class WorkflowTimelineComponent {
   isFuture(status: ApplicationStatus): boolean {
     return this.statuses.indexOf(status) > this.statuses.indexOf(this.currentStatus);
   }
+
+  trackByStatus(index: number, step: { status: ApplicationStatus }): string {
+    return step.status;
+  }
 }

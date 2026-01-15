@@ -19,7 +19,7 @@
         <mat-label>CIN</mat-label>
         <input matInput formControlName="cin" placeholder="Ex: 12345678">
         <mat-error *ngIf="applicationForm.get('cin')?.invalid && applicationForm.get('cin')?.touched">
-          CIN invalide (6 à 10 chiffres)
+          Format CIN invalide (ex: AB123456)
         </mat-error>
       </mat-form-field>
 

@@ -18,10 +18,7 @@
     <mat-card *ngFor="let app of applications" class="application-card">
       <div class="card-header">
         <span class="reference">{{ app.reference }}</span>
-        <span
-          class="status-badge"
-          [style.backgroundColor]="getStatusColor(app.status)"
-        >
+        <span class="status-badge" [style.backgroundColor]="getStatusColor(app.status)">
           {{ app.status }}
         </span>
       </div>
@@ -43,7 +40,6 @@
         >
           <mat-icon>edit</mat-icon> Continuer
         </button>
-
         <button
           mat-button
           *ngIf="app.status !== 'Brouillon'"
@@ -52,7 +48,6 @@
         >
           <mat-icon>visibility</mat-icon> Voir
         </button>
-
         <button mat-icon-button (click)="deleteApplication(app.id!)">
           <mat-icon color="warn">delete</mat-icon>
         </button>

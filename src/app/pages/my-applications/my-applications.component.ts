@@ -48,10 +48,6 @@ export class MyApplicationsComponent implements OnInit {
   }
 
   getStatusColor(status: ApplicationStatus): string {
-    return this.statusOf(status);
-  }
-
-  private statusOf(status: ApplicationStatus): string {
     return this.statusColors[status] || '#9e9e9e';
   }
 
@@ -60,7 +56,7 @@ export class MyApplicationsComponent implements OnInit {
   }
 
   deleteApplication(id: string): void {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce dossier ? Cette action est irréversible.')) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce dossier ?')) {
       this.mockData.deleteApplication(id);
     }
   }
