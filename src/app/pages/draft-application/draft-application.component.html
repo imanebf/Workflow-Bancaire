@@ -1,0 +1,95 @@
+<div class="container">
+  <mat-card class="form-card">
+    <mat-card-title>
+      <mat-icon>home</mat-icon> Nouvelle Demande de Crédit Habitat
+    </mat-card-title>
+    <mat-card-subtitle>Remplissez les informations ci-dessous</mat-card-subtitle>
+
+    <form [formGroup]="applicationForm" class="credit-form">
+      <h3><mat-icon>person</mat-icon> Identité du demandeur</h3>
+      <mat-form-field appearance="outline">
+        <mat-label>Nom complet</mat-label>
+        <input matInput formControlName="nom" placeholder="Ex: Ahmed Benali">
+        <mat-error *ngIf="applicationForm.get('nom')?.invalid && applicationForm.get('nom')?.touched">
+          Nom requis (min. 2 caractères)
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>CIN</mat-label>
+        <input matInput formControlName="cin" placeholder="Ex: 12345678">
+        <mat-error *ngIf="applicationForm.get('cin')?.invalid && applicationForm.get('cin')?.touched">
+          CIN invalide (6 à 10 chiffres)
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Téléphone</mat-label>
+        <input matInput formControlName="telephone" placeholder="Ex: 0612345678">
+        <mat-error *ngIf="applicationForm.get('telephone')?.invalid && applicationForm.get('telephone')?.touched">
+          Format: 06/07/05 + 8 chiffres
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" placeholder="ahmed@example.com">
+        <mat-error *ngIf="applicationForm.get('email')?.invalid && applicationForm.get('email')?.touched">
+          Email invalide
+        </mat-error>
+      </mat-form-field>
+
+      <h3><mat-icon>account_balance</mat-icon> Situation financière</h3>
+      <mat-form-field appearance="outline">
+        <mat-label>Revenus mensuels (DH)</mat-label>
+        <input matInput type="number" formControlName="revenusMensuels">
+        <mat-error *ngIf="applicationForm.get('revenusMensuels')?.invalid && applicationForm.get('revenusMensuels')?.touched">
+          Min. 1000 DH
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Charges mensuelles (DH)</mat-label>
+        <input matInput type="number" formControlName="chargesMensuelles">
+      </mat-form-field>
+
+      <h3><mat-icon>house</mat-icon> Détails du projet</h3>
+      <mat-form-field appearance="outline">
+        <mat-label>Prix du bien (DH)</mat-label>
+        <input matInput type="number" formControlName="prixBien">
+        <mat-error *ngIf="applicationForm.get('prixBien')?.invalid && applicationForm.get('prixBien')?.touched">
+          Min. 100 000 DH
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Apport personnel (DH)</mat-label>
+        <input matInput type="number" formControlName="apport">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Durée du prêt (années)</mat-label>
+        <input matInput type="number" formControlName="duree">
+        <mat-error *ngIf="applicationForm.get('duree')?.invalid && applicationForm.get('duree')?.touched">
+          Entre 5 et 30 ans
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Type de bien</mat-label>
+        <mat-select formControlName="typeBien">
+          <mat-option *ngFor="let type of typesBien" [value]="type">{{ type }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="form-actions">
+        <button mat-raised-button color="primary" (click)="onSaveAsDraft()" [disabled]="!applicationForm.dirty">
+          Enregistrer brouillon
+        </button>
+        <button mat-raised-button color="accent" (click)="onSubmit()" [disabled]="applicationForm.invalid">
+          Soumettre la demande
+        </button>
+      </div>
+    </form>
+  </mat-card>
+</div>

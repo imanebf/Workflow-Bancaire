@@ -1,0 +1,43 @@
+.container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.form-card {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.credit-form {
+  display: grid;
+  gap: 1.2rem;
+  padding: 1.5rem 0;
+}
+
+h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.5rem 0 1rem;
+  font-weight: 600;
+  color: #b71c1c;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .form-actions {
+    flex-direction: column;
+  }
+}
