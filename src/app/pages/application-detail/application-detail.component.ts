@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MockDataService } from '../../services/mock-data.service';
-import { Application } from '../../models/application.model';
+import { Application, ApplicationStatus } from '../../models/application.model';
 import { WorkflowTimelineComponent } from '../../shared/workflow-timeline/workflow-timeline.component';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -52,29 +52,28 @@ export class ApplicationDetailComponent implements OnInit {
     }
   }
 
-viewDocument(base64: string): void {
-  if (!base64.startsWith('data:')) {
-    console.error('Invalid base64 format:', base64);
-    alert('Impossible d’afficher ce document.');
-    return;
-  }
+  viewDocument(base64: string): void {
+    if (!base64.startsWith('')) {
+      console.error('Invalid base64 format:', base64);
+      alert('Impossible d’afficher ce document.');
+      return;
+    }
+    const byteString = atob(base64.split(',')[1]);
+    const mimeString = base64.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    const blob = new Blob([ab], { type: mimeString });
 
-  const byteString = atob(base64.split(',')[1]);
-  const mimeString = base64.split(',')[0].split(':')[1].split(';')[0];
-  const ab = new ArrayBuffer(byteString.length);
-  const ia = new Uint8Array(ab);
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i);
-  }
-  const blob = new Blob([ab], { type: mimeString });
+    const blobUrl = URL.createObjectURL(blob);
 
-  const blobUrl = URL.createObjectURL(blob);
-
-  const win = window.open(blobUrl, '_blank');
-  if (!win) {
-    alert('Veuillez autoriser les popups pour afficher les documents.');
+    const win = window.open(blobUrl, '_blank');
+    if (!win) {
+      alert('Veuillez autoriser les popups pour afficher les documents.');
+    }
   }
-}
 
   editApplication(): void {
     if (this.application && this.application.status === 'Brouillon') {
@@ -86,6 +85,38 @@ viewDocument(base64: string): void {
     if (this.application && confirm('Supprimer ce dossier ?')) {
       this.mockData.deleteApplication(this.application.id!);
       this.router.navigate(['/mes-dossiers']);
+    }
+  }
+
+  advanceStatus(): void {
+    if (!this.application) return;
+
+    const allStatuses: ApplicationStatus[] = [
+      'Brouillon',
+      'Soumis',
+      'Pre-analyse',
+      'Documents requis',
+      'Analyse finale',
+      'Offre generee',
+      'Signature',
+      'Accepte'
+    ];
+
+    const currentIndex = allStatuses.indexOf(this.application.status);
+    if (currentIndex < allStatuses.length - 1) {
+      const newStatus = allStatuses[currentIndex + 1];
+      this.application.status = newStatus;
+      this.mockData.saveApplication(this.application);
+      alert(`Dossier avancé à l'étape : ${newStatus}`);
+    }
+  }
+
+  refuseApplication(): void {
+    if (!this.application) return;
+    if (confirm('Confirmer le refus de ce dossier ?')) {
+      this.application.status = 'Refuse';
+      this.mockData.saveApplication(this.application);
+      alert('Dossier refusé.');
     }
   }
 

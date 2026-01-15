@@ -12,9 +12,30 @@
       >
         <mat-icon>edit</mat-icon> Modifier
       </button>
+
+      <button
+        mat-stroked-button
+        color="primary"
+        (click)="advanceStatus()"
+        *ngIf="application.status !== 'Accepte' && application.status !== 'Refuse'"
+      >
+        <mat-icon>arrow_forward</mat-icon> Avancer
+      </button>
+
+
+      <button
+        mat-stroked-button
+        color="warn"
+        (click)="refuseApplication()"
+        *ngIf="application.status !== 'Refuse' && application.status !== 'Accepte'"
+      >
+        <mat-icon>cancel</mat-icon> Refuser
+      </button>
+
       <button mat-stroked-button color="warn" (click)="deleteApplication()">
         <mat-icon>delete</mat-icon> Supprimer
       </button>
+
       <button mat-raised-button color="accent" (click)="exportToPDF()">
         <mat-icon>picture_as_pdf</mat-icon> Exporter PDF
       </button>
@@ -42,6 +63,7 @@
         <p><strong>Capacité d'emprunt :</strong> {{ application.finances.revenusMensuels - application.finances.chargesMensuelles | number }} DH</p>
       </mat-card-content>
     </mat-card>
+
     <mat-card>
       <mat-card-title><mat-icon>home</mat-icon> Projet</mat-card-title>
       <mat-card-content>
