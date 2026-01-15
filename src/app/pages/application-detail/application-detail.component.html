@@ -1,0 +1,57 @@
+<div class="detail-container" *ngIf="application">
+  <div class="header">
+    <h1>
+      <mat-icon>description</mat-icon> Dossier {{ application.reference }}
+    </h1>
+    <div class="actions">
+      <button
+        mat-stroked-button
+        color="primary"
+        *ngIf="application.status === 'Brouillon'"
+        (click)="editApplication()"
+      >
+        <mat-icon>edit</mat-icon> Modifier
+      </button>
+      <button mat-stroked-button color="warn" (click)="deleteApplication()">
+        <mat-icon>delete</mat-icon> Supprimer
+      </button>
+      <button mat-raised-button color="accent" (click)="exportToPDF()">
+        <mat-icon>picture_as_pdf</mat-icon> Exporter PDF
+      </button>
+    </div>
+  </div>
+
+  <app-workflow-timeline [currentStatus]="application.status"></app-workflow-timeline>
+
+  <div class="info-grid">
+    <mat-card>
+      <mat-card-title><mat-icon>person</mat-icon> Identité</mat-card-title>
+      <mat-card-content>
+        <p><strong>Nom :</strong> {{ application.applicant.nom }}</p>
+        <p><strong>CIN :</strong> {{ application.applicant.cin }}</p>
+        <p><strong>Téléphone :</strong> {{ application.applicant.telephone }}</p>
+        <p><strong>Email :</strong> {{ application.applicant.email }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-title><mat-icon>account_balance</mat-icon> Finances</mat-card-title>
+      <mat-card-content>
+        <p><strong>Revenus mensuels :</strong> {{ application.finances.revenusMensuels | number }} DH</p>
+        <p><strong>Charges mensuelles :</strong> {{ application.finances.chargesMensuelles | number }} DH</p>
+        <p><strong>Capacité d'emprunt :</strong> {{ application.finances.revenusMensuels - application.finances.chargesMensuelles | number }} DH</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-title><mat-icon>home</mat-icon> Projet</mat-card-title>
+      <mat-card-content>
+        <p><strong>Type de bien :</strong> {{ application.loan.typeBien }}</p>
+        <p><strong>Prix du bien :</strong> {{ application.loan.prixBien | number }} DH</p>
+        <p><strong>Apport personnel :</strong> {{ application.loan.apport | number }} DH</p>
+        <p><strong>Durée du prêt :</strong> {{ application.loan.duree }} ans</p>
+        <p><strong>Montant emprunté :</strong> {{ application.loan.prixBien - application.loan.apport | number }} DH</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

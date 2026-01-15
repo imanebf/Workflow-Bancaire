@@ -43,7 +43,7 @@
         <button
           mat-button
           *ngIf="app.status !== 'Brouillon'"
-          disabled
+          (click)="router.navigate(['/dossier', app.id])"
           color="accent"
         >
           <mat-icon>visibility</mat-icon> Voir
