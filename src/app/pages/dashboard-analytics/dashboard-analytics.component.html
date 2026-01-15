@@ -1,0 +1,52 @@
+<div class="analytics-container">
+  <div class="header">
+    <h1><mat-icon>insights</mat-icon> Tableau de bord</h1>
+    <button mat-raised-button color="primary" (click)="router.navigate(['/nouvelle-demande'])">
+      <mat-icon>add</mat-icon> Nouvelle Demande
+    </button>
+  </div>
+
+  <div class="stats-grid">
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <h3>Total dossiers</h3>
+        <p class="value">{{ totalDossiers }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card" style="border-left: 4px solid #1976d2;">
+      <mat-card-content>
+        <h3>Brouillons</h3>
+        <p class="value">{{ brouillons }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card" style="border-left: 4px solid #388e3c;">
+      <mat-card-content>
+        <h3>Acceptés</h3>
+        <p class="value">{{ acceptes }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card" style="border-left: 4px solid #d32f2f;">
+      <mat-card-content>
+        <h3>Refusés</h3>
+        <p class="value">{{ refuses }}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="chart-section">
+    <h2><mat-icon>pie_chart</mat-icon> Répartition par statut</h2>
+    <div class="chart-container">
+      <div class="chart-segment" *ngFor="let item of chartData" [style.width.%]="item.percent" [style.backgroundColor]="getStatusColor(item.status)">
+        <span>{{ item.label }} ({{ item.count }})</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="activity-section" *ngIf="derniereActivite">
+    <h2><mat-icon>history</mat-icon> Dernière activité</h2>
+    <p>Votre dernier dossier a été créé le {{ derniereActivite | date:'dd/MM/yyyy HH:mm' }}</p>
+  </div>
+</div>
