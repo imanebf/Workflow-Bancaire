@@ -83,3 +83,23 @@ mat-form-field {
     flex-direction: column;
   }
 }
+
+.simulation-card {
+  background: #f5f9ff;
+  border-left: 4px solid #1976d2;
+  padding: 16px;
+  margin-top: 12px;
+}
+
+.simulation-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+  font-size: 0.95rem;
+}
+
+.simulation-note {
+  margin-top: 12px;
+  color: #666;
+  font-style: italic;
+}

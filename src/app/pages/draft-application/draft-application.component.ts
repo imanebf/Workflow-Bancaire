@@ -55,6 +55,37 @@ export class DraftApplicationComponent implements OnInit {
     });
   }
 
+  calculateMensualite(): number {
+  const prixBien = this.applicationForm.get('prixBien')?.value || 0;
+  const apport = this.applicationForm.get('apport')?.value || 0;
+  const duree = this.applicationForm.get('duree')?.value || 0;
+
+  const montantEmprunte = prixBien - apport;
+  if (montantEmprunte <= 0 || duree <= 0) return 0;
+
+  const tauxAnnuel = 0.05;
+  const tauxMensuel = tauxAnnuel / 12;
+  const nbMensualites = duree * 12;
+
+  const numerateur = montantEmprunte * tauxMensuel * Math.pow(1 + tauxMensuel, nbMensualites);
+  const denominateur = Math.pow(1 + tauxMensuel, nbMensualites) - 1;
+  const mensualite = numerateur / denominateur;
+
+  return isNaN(mensualite) ? 0 : mensualite;
+}
+
+getMensualiteFormatted(): string {
+  const m = this.calculateMensualite();
+  return m > 0 ? `${m.toFixed(2)} DH/mois` : '—';
+}
+
+getCoutTotalCred(): string {
+  const m = this.calculateMensualite();
+  const duree = this.applicationForm.get('duree')?.value || 0;
+  const total = m * duree * 12;
+  return total > 0 ? `${total.toLocaleString('fr-FR')} DH` : '—';
+}
+
   private initForm(): void {
     this.applicationForm = this.fb.group({
       nom: ['', [Validators.required, Validators.minLength(2)]],

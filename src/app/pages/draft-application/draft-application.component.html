@@ -82,6 +82,25 @@
         </mat-select>
       </mat-form-field>
 
+      <h3><mat-icon>calculate</mat-icon> Simulation de crédit</h3>
+      <mat-card class="simulation-card">
+        <div class="simulation-row">
+          <span>Montant emprunté :</span>
+          <strong>{{ (applicationForm.value.prixBien - applicationForm.value.apport) | number }} DH</strong>
+        </div>
+        <div class="simulation-row">
+          <span>Mensualité estimée :</span>
+          <strong>{{ getMensualiteFormatted() }}</strong>
+        </div>
+        <div class="simulation-row">
+          <span>Coût total du crédit :</span>
+          <strong>{{ getCoutTotalCred() }}</strong>
+        </div>
+        <div class="simulation-note">
+          <small>Taux simulé : 5% annuel. Valeurs indicatives.</small>
+        </div>
+      </mat-card>
+
       <h3><mat-icon>attach_file</mat-icon> Pièces justificatives</h3>
       <div class="upload-area" (click)="fileInput.click()">
         <mat-icon>cloud_upload</mat-icon>
