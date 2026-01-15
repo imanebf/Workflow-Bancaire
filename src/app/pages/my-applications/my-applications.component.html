@@ -1,9 +1,14 @@
 <div class="dashboard-container">
   <div class="header">
     <h1><mat-icon>folder</mat-icon> Mes Dossiers</h1>
-    <button mat-raised-button color="primary" (click)="router.navigate(['/nouvelle-demande'])">
-      <mat-icon>add</mat-icon> Nouvelle Demande
-    </button>
+    <div class="header-actions">
+      <button mat-icon-button (click)="toggleDarkMode()">
+        <mat-icon>{{ isDark ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
+      <button mat-raised-button color="primary" (click)="router.navigate(['/nouvelle-demande'])">
+        <mat-icon>add</mat-icon> Nouvelle Demande
+      </button>
+    </div>
   </div>
 
   <div *ngIf="applications.length === 0" class="empty-state">

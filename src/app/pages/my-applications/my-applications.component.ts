@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { MockDataService } from '../../services/mock-data.service';
 import { Application, ApplicationStatus } from '../../models/application.model';
 import { WorkflowTimelineComponent } from '../../shared/workflow-timeline/workflow-timeline.component';
+import { ThemeService } from '../../core/theme.service';
 
 @Component({
   selector: 'app-my-applications',
@@ -36,10 +37,15 @@ export class MyApplicationsComponent implements OnInit {
     'Refuse': '#d32f2f'
   };
 
+  isDark = false;
+
   constructor(
     private mockData: MockDataService,
-    public router: Router
-  ) {}
+    public router: Router,
+    private themeService: ThemeService
+  ) {
+    this.isDark = this.themeService.isDark();
+  }
 
   ngOnInit(): void {
     this.mockData.applications$.subscribe(apps => {
@@ -49,6 +55,11 @@ export class MyApplicationsComponent implements OnInit {
 
   getStatusColor(status: ApplicationStatus): string {
     return this.statusColors[status] || '#9e9e9e';
+  }
+
+  toggleDarkMode(): void {
+    this.themeService.toggleTheme();
+    this.isDark = this.themeService.isDark();
   }
 
   continueDraft(id: string): void {

@@ -20,11 +20,12 @@ export class MockDataService {
         try {
           const apps: Application[] = JSON.parse(saved).map((app: any) => ({
             ...app,
-            createdAt: new Date(app.createdAt)
+            createdAt: new Date(app.createdAt),
+            documents: app.documents || []
           }));
           this.applicationsSubject.next(apps);
         } catch (e) {
-          console.warn('Failed to parse applications from localStorage', e);
+          console.warn('Failed to parse applications', e);
           this.applicationsSubject.next([]);
         }
       }
@@ -38,10 +39,10 @@ export class MockDataService {
   saveApplication(app: Application): void {
     const apps = this.applicationsSubject.value;
     if (!app.id) {
-      app.documents = [];
       app.id = this.generateId();
       app.reference = 'REF-' + app.id.slice(0, 6).toUpperCase();
     }
+    if (!app.documents) app.documents = [];
     app.createdAt = app.createdAt || new Date();
     const updated = [...apps.filter(a => a.id !== app.id), app];
     this.applicationsSubject.next(updated);
@@ -59,7 +60,7 @@ export class MockDataService {
       try {
         localStorage.setItem('applications', JSON.stringify(applications));
       } catch (e) {
-        console.error('Failed to save to localStorage', e);
+        console.error('Save failed', e);
       }
     }
   }

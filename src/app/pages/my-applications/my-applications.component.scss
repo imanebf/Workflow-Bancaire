@@ -9,12 +9,21 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+
   h1 {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-weight: 600;
     color: #b71c1c;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
   }
 }
 
