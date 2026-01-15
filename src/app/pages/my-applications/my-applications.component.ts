@@ -5,20 +5,26 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { MockDataService } from '../../services/mock-data.service';
-import { Application } from '../../models/application.model';
-import { map } from 'rxjs';
+import { Application, ApplicationStatus } from '../../models/application.model';
+import { WorkflowTimelineComponent } from '../../shared/workflow-timeline/workflow-timeline.component';
 
 @Component({
   selector: 'app-my-applications',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    WorkflowTimelineComponent
+  ],
   templateUrl: './my-applications.component.html',
   styleUrls: ['./my-applications.component.scss']
 })
 export class MyApplicationsComponent implements OnInit {
   applications: Application[] = [];
 
-  statusColors: Record<Application['status'], string> = {
+  statusColors: Record<ApplicationStatus, string> = {
     'Brouillon': '#9e9e9e',
     'Soumis': '#1976d2',
     'Pre-analyse': '#388e3c',
@@ -41,8 +47,12 @@ export class MyApplicationsComponent implements OnInit {
     });
   }
 
-  getStatusColor(status: Application['status']): string {
-    return this.statusColors[status] || '#000';
+  getStatusColor(status: ApplicationStatus): string {
+    return this.statusOf(status);
+  }
+
+  private statusOf(status: ApplicationStatus): string {
+    return this.statusColors[status] || '#9e9e9e';
   }
 
   continueDraft(id: string): void {
@@ -50,12 +60,8 @@ export class MyApplicationsComponent implements OnInit {
   }
 
   deleteApplication(id: string): void {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce dossier ?')) {
-      const apps = this.mockData['applicationsSubject'].value;
-      const updated = apps.filter(a => a.id !== id);
-      this.mockData['applicationsSubject'].next(updated);
-      localStorage.setItem('applications', JSON.stringify(updated));
-      this.applications = updated;
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce dossier ? Cette action est irréversible.')) {
+      this.mockData.deleteApplication(id);
     }
   }
 }

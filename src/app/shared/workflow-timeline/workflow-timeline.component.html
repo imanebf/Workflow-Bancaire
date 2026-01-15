@@ -1,0 +1,14 @@
+<div class="timeline">
+  <div
+    *ngFor="let step of steps"
+    class="step"
+    [class.completed]="isCompleted(step.status)"
+    [class.active]="isActive(step.status)"
+    [class.future]="isFuture(step.status)"
+  >
+    <div class="icon-container">
+      <mat-icon class="icon">{{ step.icon }}</mat-icon>
+    </div>
+    <div class="label">{{ step.label }}</div>
+  </div>
+</div>

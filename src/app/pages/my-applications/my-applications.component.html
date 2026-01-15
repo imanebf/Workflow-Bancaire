@@ -30,6 +30,8 @@
         <p><strong>{{ app.applicant.nom }}</strong></p>
         <p>Bien : {{ app.loan.typeBien }} | Prix : {{ app.loan.prixBien | number }} DH</p>
         <p>Créé le : {{ app.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+
+        <app-workflow-timeline [currentStatus]="app.status"></app-workflow-timeline>
       </div>
 
       <div class="card-actions">
@@ -41,6 +43,7 @@
         >
           <mat-icon>edit</mat-icon> Continuer
         </button>
+
         <button
           mat-button
           *ngIf="app.status !== 'Brouillon'"
@@ -49,6 +52,7 @@
         >
           <mat-icon>visibility</mat-icon> Voir
         </button>
+
         <button mat-icon-button (click)="deleteApplication(app.id!)">
           <mat-icon color="warn">delete</mat-icon>
         </button>

@@ -1,0 +1,23 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { WorkflowTimelineComponent } from './workflow-timeline.component';
+
+describe('WorkflowTimelineComponent', () => {
+  let component: WorkflowTimelineComponent;
+  let fixture: ComponentFixture<WorkflowTimelineComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [WorkflowTimelineComponent]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(WorkflowTimelineComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
