@@ -32,7 +32,6 @@ export class DraftApplicationComponent implements OnInit {
   typesBien = ['Appartement', 'Maison', 'Terrain', 'Local commercial'];
   loadedApplicationId: string | null = null;
 
-  // Upload
   uploadedFiles: UploadedFile[] = [];
   allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
   maxFileSize = 5 * 1024 * 1024; // 5 Mo
@@ -96,36 +95,40 @@ export class DraftApplicationComponent implements OnInit {
     }
   }
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length === 0) return;
+onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (!input.files || input.files.length === 0) return;
 
-    const file = input.files[0];
+  const file = input.files[0];
 
-    if (!this.allowedTypes.includes(file.type)) {
-      alert('Type de fichier non autorisé. Seuls JPG, PNG et PDF sont acceptés.');
-      return;
-    }
-    if (file.size > this.maxFileSize) {
-      alert('Fichier trop volumineux (max 5 Mo).');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const base64 = e.target?.result as string;
-      const newFile: UploadedFile = {
-        name: file.name,
-        type: this.guessDocumentType(file.name),
-        url: base64,
-        size: file.size
-      };
-      this.uploadedFiles.push(newFile);
-      this.applicationForm.markAsDirty();
-    };
-    reader.readAsDataURL(file);
-    input.value = '';
+  if (!this.allowedTypes.includes(file.type)) {
+    alert('Type de fichier non autorisé. Seuls JPG, PNG et PDF sont acceptés.');
+    return;
   }
+  if (file.size > this.maxFileSize) {
+    alert('Fichier trop volumineux (max 5 Mo).');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const base64 = e.target?.result as string;
+    if (!base64.startsWith('data:')) {
+      console.error('Base64 invalide');
+      return;
+    }
+    const newFile: UploadedFile = {
+      name: file.name,
+      type: this.guessDocumentType(file.name),
+      url: base64,
+      size: file.size
+    };
+    this.uploadedFiles.push(newFile);
+    this.applicationForm.markAsDirty();
+  };
+  reader.readAsDataURL(file);
+  input.value = '';
+}
 
   private guessDocumentType(filename: string): string {
     const lower = filename.toLowerCase();

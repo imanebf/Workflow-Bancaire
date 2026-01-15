@@ -52,9 +52,29 @@ export class ApplicationDetailComponent implements OnInit {
     }
   }
 
-  viewDocument(base64: string): void {
-    window.open(base64, '_blank');
+viewDocument(base64: string): void {
+  if (!base64.startsWith('data:')) {
+    console.error('Invalid base64 format:', base64);
+    alert('Impossible d’afficher ce document.');
+    return;
   }
+
+  const byteString = atob(base64.split(',')[1]);
+  const mimeString = base64.split(',')[0].split(':')[1].split(';')[0];
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  const blob = new Blob([ab], { type: mimeString });
+
+  const blobUrl = URL.createObjectURL(blob);
+
+  const win = window.open(blobUrl, '_blank');
+  if (!win) {
+    alert('Veuillez autoriser les popups pour afficher les documents.');
+  }
+}
 
   editApplication(): void {
     if (this.application && this.application.status === 'Brouillon') {
