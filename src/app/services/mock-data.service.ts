@@ -10,16 +10,29 @@ export class MockDataService {
   applications$ = this.applicationsSubject.asObservable();
 
   constructor() {
-    const saved = localStorage.getItem('applications');
-    if (saved) {
-      try {
-        const apps = JSON.parse(saved);
-        apps.forEach((a: any) => a.createdAt = new Date(a.createdAt));
-        this.applicationsSubject.next(apps);
-      } catch {
-        this.applicationsSubject.next([]);
+    this.loadFromLocalStorage();
+  }
+
+  private loadFromLocalStorage(): void {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const saved = localStorage.getItem('applications');
+      if (saved) {
+        try {
+          const apps: Application[] = JSON.parse(saved).map((app: any) => ({
+            ...app,
+            createdAt: new Date(app.createdAt)
+          }));
+          this.applicationsSubject.next(apps);
+        } catch (e) {
+          console.warn('Failed to parse applications from localStorage', e);
+          this.applicationsSubject.next([]);
+        }
       }
     }
+  }
+
+  getApplicationById(id: string): Application | undefined {
+    return this.applicationsSubject.value.find(a => a.id === id);
   }
 
   saveApplication(app: Application): void {
@@ -27,11 +40,27 @@ export class MockDataService {
     if (!app.id) {
       app.id = this.generateId();
       app.reference = 'REF-' + app.id.slice(0, 6).toUpperCase();
-      app.createdAt = new Date();
     }
+    app.createdAt = app.createdAt || new Date();
     const updated = [...apps.filter(a => a.id !== app.id), app];
     this.applicationsSubject.next(updated);
-    localStorage.setItem('applications', JSON.stringify(updated));
+    this.saveToLocalStorage(updated);
+  }
+
+  deleteApplication(id: string): void {
+    const updated = this.applicationsSubject.value.filter(a => a.id !== id);
+    this.applicationsSubject.next(updated);
+    this.saveToLocalStorage(updated);
+  }
+
+  private saveToLocalStorage(applications: Application[]): void {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      try {
+        localStorage.setItem('applications', JSON.stringify(applications));
+      } catch (e) {
+        console.error('Failed to save to localStorage', e);
+      }
+    }
   }
 
   private generateId(): string {

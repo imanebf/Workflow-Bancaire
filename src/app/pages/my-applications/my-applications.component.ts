@@ -46,7 +46,7 @@ export class MyApplicationsComponent implements OnInit {
   }
 
   continueDraft(id: string): void {
-    alert('Reprise du dossier non implémentée encore (Étape 3)');
+    this.router.navigate(['/nouvelle-demande', id]);
   }
 
   deleteApplication(id: string): void {

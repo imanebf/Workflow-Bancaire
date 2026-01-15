@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MockDataService } from '../../services/mock-data.service';
 import { Application } from '../../models/application.model';
@@ -30,15 +30,23 @@ import { Application } from '../../models/application.model';
 export class DraftApplicationComponent implements OnInit {
   applicationForm!: FormGroup;
   typesBien = ['Appartement', 'Maison', 'Terrain', 'Local commercial'];
+  loadedApplicationId: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private mockData: MockDataService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.initForm();
+    this.route.params.subscribe(params => {
+      const id = params['id'];
+      if (id) {
+        this.loadApplication(id);
+      }
+    });
   }
 
   private initForm(): void {
@@ -58,6 +66,30 @@ export class DraftApplicationComponent implements OnInit {
     });
   }
 
+  private loadApplication(id: string): void {
+    const app = this.mockData.getApplicationById(id);
+    if (app && app.status === 'Brouillon') {
+      this.loadedApplicationId = id;
+      this.applicationForm.patchValue({
+        nom: app.applicant.nom,
+        cin: app.applicant.cin,
+        telephone: app.applicant.telephone,
+        email: app.applicant.email,
+
+        revenusMensuels: app.finances.revenusMensuels,
+        chargesMensuelles: app.finances.chargesMensuelles,
+
+        prixBien: app.loan.prixBien,
+        apport: app.loan.apport,
+        duree: app.loan.duree,
+        typeBien: app.loan.typeBien
+      });
+    } else {
+      alert('Dossier non trouvé ou déjà soumis.');
+      this.router.navigate(['/mes-dossiers']);
+    }
+  }
+
   onSaveAsDraft(): void {
     if (this.applicationForm.valid) {
       const app: Application = this.buildApplication('Brouillon');
@@ -75,27 +107,32 @@ export class DraftApplicationComponent implements OnInit {
     }
   }
 
- private buildApplication(status: Application['status']): Application {
-   const now = new Date();
-   return {
-     applicant: {
-       nom: this.applicationForm.value.nom,
-       cin: this.applicationForm.value.cin,
-       telephone: this.applicationForm.value.telephone,
-       email: this.applicationForm.value.email
-     },
-     finances: {
-       revenusMensuels: this.applicationForm.value.revenusMensuels,
-       chargesMensuelles: this.applicationForm.value.chargesMensuelles
-     },
-     loan: {
-       prixBien: this.applicationForm.value.prixBien,
-       apport: this.applicationForm.value.apport,
-       duree: this.applicationForm.value.duree,
-       typeBien: this.applicationForm.value.typeBien
-     },
-     status,
-     createdAt: now
-   };
- }
+  private buildApplication(status: Application['status']): Application {
+    const now = new Date();
+    const existingApp = this.loadedApplicationId
+      ? this.mockData.getApplicationById(this.loadedApplicationId)
+      : null;
+
+    return {
+      id: this.loadedApplicationId || undefined,
+      applicant: {
+        nom: this.applicationForm.value.nom,
+        cin: this.applicationForm.value.cin,
+        telephone: this.applicationForm.value.telephone,
+        email: this.applicationForm.value.email
+      },
+      finances: {
+        revenusMensuels: this.applicationForm.value.revenusMensuels,
+        chargesMensuelles: this.applicationForm.value.chargesMensuelles
+      },
+      loan: {
+        prixBien: this.applicationForm.value.prixBien,
+        apport: this.applicationForm.value.apport,
+        duree: this.applicationForm.value.duree,
+        typeBien: this.applicationForm.value.typeBien
+      },
+      status,
+      createdAt: existingApp?.createdAt || now
+    };
+  }
 }

@@ -4,6 +4,13 @@ import { MyApplicationsComponent } from './pages/my-applications/my-applications
 
 export const routes: Routes = [
   { path: '', redirectTo: '/nouvelle-demande', pathMatch: 'full' },
-  { path: 'nouvelle-demande', component: DraftApplicationComponent },
+  {
+    path: 'nouvelle-demande',
+    component: DraftApplicationComponent
+  },
+  {
+    path: 'nouvelle-demande/:id',
+    component: DraftApplicationComponent
+  },
   { path: 'mes-dossiers', component: MyApplicationsComponent }
 ];
