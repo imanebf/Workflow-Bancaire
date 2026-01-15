@@ -17,7 +17,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>CIN</mat-label>
-        <input matInput formControlName="cin" placeholder="Ex: 12345678">
+        <input matInput formControlName="cin" placeholder="Ex: AB123456">
         <mat-error *ngIf="applicationForm.get('cin')?.invalid && applicationForm.get('cin')?.touched">
           Format CIN invalide (ex: AB123456)
         </mat-error>
@@ -81,6 +81,24 @@
           <mat-option *ngFor="let type of typesBien" [value]="type">{{ type }}</mat-option>
         </mat-select>
       </mat-form-field>
+
+      <h3><mat-icon>attach_file</mat-icon> Pièces justificatives</h3>
+      <div class="upload-area" (click)="fileInput.click()">
+        <mat-icon>cloud_upload</mat-icon>
+        <p>Glissez vos fichiers ici ou cliquez pour parcourir</p>
+        <p class="hint">Formats acceptés : JPG, PNG, PDF (max 5 Mo)</p>
+      </div>
+      <input #fileInput type="file" (change)="onFileSelected($event)" style="display:none;">
+
+      <div class="uploaded-files" *ngIf="uploadedFiles.length > 0">
+        <div class="file-item" *ngFor="let file of uploadedFiles; let i = index">
+          <mat-icon>{{ getFileIcon(file.type) }}</mat-icon>
+          <span>{{ file.name }}</span>
+          <button mat-icon-button (click)="removeFile(i)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
 
       <div class="form-actions">
         <button mat-raised-button color="primary" (click)="onSaveAsDraft()" [disabled]="!applicationForm.dirty">

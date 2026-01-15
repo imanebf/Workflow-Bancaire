@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,7 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MockDataService } from '../../services/mock-data.service';
-import { Application } from '../../models/application.model';
+import { Application, UploadedFile } from '../../models/application.model';
 
 @Component({
   selector: 'app-draft-application',
@@ -31,6 +31,13 @@ export class DraftApplicationComponent implements OnInit {
   applicationForm!: FormGroup;
   typesBien = ['Appartement', 'Maison', 'Terrain', 'Local commercial'];
   loadedApplicationId: string | null = null;
+
+  // Upload
+  uploadedFiles: UploadedFile[] = [];
+  allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+  maxFileSize = 5 * 1024 * 1024; // 5 Mo
+
+  @ViewChild('fileInput') fileInput!: ElementRef;
 
   constructor(
     private fb: FormBuilder,
@@ -75,18 +82,69 @@ export class DraftApplicationComponent implements OnInit {
         cin: app.applicant.cin,
         telephone: app.applicant.telephone,
         email: app.applicant.email,
-
         revenusMensuels: app.finances.revenusMensuels,
         chargesMensuelles: app.finances.chargesMensuelles,
-
         prixBien: app.loan.prixBien,
         apport: app.loan.apport,
         duree: app.loan.duree,
         typeBien: app.loan.typeBien
       });
+      this.uploadedFiles = app.documents || [];
     } else {
       alert('Dossier non trouvé ou déjà soumis.');
       this.router.navigate(['/mes-dossiers']);
+    }
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+
+    if (!this.allowedTypes.includes(file.type)) {
+      alert('Type de fichier non autorisé. Seuls JPG, PNG et PDF sont acceptés.');
+      return;
+    }
+    if (file.size > this.maxFileSize) {
+      alert('Fichier trop volumineux (max 5 Mo).');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = e.target?.result as string;
+      const newFile: UploadedFile = {
+        name: file.name,
+        type: this.guessDocumentType(file.name),
+        url: base64,
+        size: file.size
+      };
+      this.uploadedFiles.push(newFile);
+      this.applicationForm.markAsDirty();
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+  }
+
+  private guessDocumentType(filename: string): string {
+    const lower = filename.toLowerCase();
+    if (lower.includes('cin') || lower.includes('identite')) return 'cin';
+    if (lower.includes('facture') || lower.includes('revenu')) return 'revenu';
+    if (lower.includes('promesse') || lower.includes('vente')) return 'promesse';
+    return 'autre';
+  }
+
+  removeFile(index: number): void {
+    this.uploadedFiles.splice(index, 1);
+  }
+
+  getFileIcon(type: string): string {
+    switch (type) {
+      case 'cin': return 'badge';
+      case 'revenu': return 'receipt';
+      case 'promesse': return 'home';
+      default: return 'description';
     }
   }
 
@@ -132,6 +190,7 @@ export class DraftApplicationComponent implements OnInit {
         typeBien: this.applicationForm.value.typeBien
       },
       status,
+      documents: this.uploadedFiles,
       createdAt: existingApp?.createdAt || now
     };
   }

@@ -28,6 +28,13 @@ export type ApplicationStatus =
   | 'Accepte'
   | 'Refuse';
 
+export interface UploadedFile {
+  name: string;
+  type: string;
+  url: string;
+  size: number;
+}
+
 export interface Application {
   id?: string;
   reference?: string;
@@ -36,8 +43,8 @@ export interface Application {
   finances: FinancialSituation;
   status: ApplicationStatus;
   createdAt: Date;
+  documents: UploadedFile[];
 }
-
 
 export const WORKFLOW_STEPS = [
   { status: 'Brouillon', label: 'Brouillon', icon: 'edit' },
@@ -46,7 +53,7 @@ export const WORKFLOW_STEPS = [
   { status: 'Documents requis', label: 'Documents requis', icon: 'description' },
   { status: 'Analyse finale', label: 'Analyse finale', icon: 'rule' },
   { status: 'Offre generee', label: 'Offre générée', icon: 'document_scanner' },
-  { status: 'Signature', label: 'Signature', icon: 'draw' }, // ← ✅ corrigé
+  { status: 'Signature', label: 'Signature', icon: 'draw' },
   { status: 'Accepte', label: 'Accepté', icon: 'check_circle' },
   { status: 'Refuse', label: 'Refusé', icon: 'cancel' }
 ] as const;

@@ -38,6 +38,7 @@ export class MockDataService {
   saveApplication(app: Application): void {
     const apps = this.applicationsSubject.value;
     if (!app.id) {
+      app.documents = [];
       app.id = this.generateId();
       app.reference = 'REF-' + app.id.slice(0, 6).toUpperCase();
     }
